@@ -189,6 +189,7 @@ void            clearpteu(pde_t *pgdir, char *uva);
 
 // hello nigga ;)
 int             hello();
+int             helloYou(const char*);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

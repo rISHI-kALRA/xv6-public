@@ -95,3 +95,16 @@ sys_hello(){
   cprintf("hello nigga\n");
   return 0;
 }
+
+int
+sys_helloYou(void) {
+  char *path, *argv[MAXARG];
+  uint uargv;
+
+  if(argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0){
+    return -1;
+  }
+  memset(argv, 0, sizeof(argv));
+  cprintf("%s\n", path);
+  return 0;
+}
