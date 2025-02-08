@@ -1,3 +1,5 @@
+#include "processInfo.h"
+
 struct stat;
 struct rtcdate;
 
@@ -39,3 +41,7 @@ void free(void*);
 int atoi(const char*);
 int hello();
 int helloYou(const char*);
+int getNumProc();
+int getMaxPid();
+int getProcInfo(int, struct processInfo*);
+int setprio(int);

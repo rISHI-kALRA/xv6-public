@@ -1,3 +1,5 @@
+// #include "processInfo.h"
+
 struct buf;
 struct context;
 struct file;
@@ -190,6 +192,9 @@ void            clearpteu(pde_t *pgdir, char *uva);
 // hello nigga ;)
 int             hello();
 int             helloYou(const char*);
+int             getNumProc();
+int             getMaxPid();
+int             getProcInfo(int, struct processInfo*);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

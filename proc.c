@@ -7,6 +7,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#include "processInfo.h"
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -141,6 +143,9 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+  //Rishi here ;)
+  p->contextSwitches = 0;
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -367,6 +372,7 @@ sched(void)
 {
   int intena;
   struct proc *p = myproc();
+  p->contextSwitches++;
 
   if(!holding(&ptable.lock))
     panic("sched ptable.lock");
@@ -531,4 +537,62 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+
+// getNumProc, Rishi here ;)
+
+int
+getNumProc() {
+  struct proc *p;
+  int count = 0;
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state != UNUSED)
+      count++;
+
+  release(&ptable.lock);
+
+  return count;
+}
+
+int 
+getMaxPid() {
+  struct proc *p;
+  int maxPid = 0;
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state != UNUSED)
+      if(maxPid < p->pid) 
+        maxPid = p->pid;
+
+  release(&ptable.lock);
+
+  return maxPid;
+}
+
+int
+getProcInfo(int pid, struct processInfo *t) {
+  struct proc *p;
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state != UNUSED)
+      if(p->pid == pid) {
+        if(pid > 1) t->ppid = p->parent->pid;
+        else t->ppid = 0;
+        t->psize = p->sz;
+        t->numberContextSwitches = p->contextSwitches;
+        break;
+      }
+
+  release(&ptable.lock);
+  return 0;
+}
+
+int
+setprio(int arg1) {
+  
 }
